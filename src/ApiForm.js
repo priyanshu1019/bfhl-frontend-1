@@ -7,6 +7,7 @@ const ApiForm = () => {
     const [responseData, setResponseData] = useState(null);
     const [error, setError] = useState('');
     const [selectedFilters, setSelectedFilters] = useState([]);
+    const [filterSelection, setFilterSelection] = useState('');
 
     const handleInputChange = (e) => {
         setJsonInput(e.target.value);
@@ -17,7 +18,7 @@ const ApiForm = () => {
         try {
             const parsedInput = JSON.parse(jsonInput);
             if (!parsedInput.data) throw new Error('Invalid JSON structure. Please include a data array.');
-            const response = await axios.post('http://localhost:3000/bfhl', parsedInput);
+            const response = await axios.post('https://bfhl-backend-1-txsw.onrender.com/bfhl', parsedInput);
             setResponseData(response.data);
             setError('');
         } catch (err) {
@@ -30,6 +31,7 @@ const ApiForm = () => {
         if (selectedFilter && !selectedFilters.includes(selectedFilter)) {
             setSelectedFilters([...selectedFilters, selectedFilter]);
         }
+        setFilterSelection(''); // Clear the selection after adding the filter
     };
 
     const removeFilter = (filter) => {
@@ -41,10 +43,10 @@ const ApiForm = () => {
         const { numbers, alphabets, highest_lowercase_alphabet } = responseData;
         return (
             <div className="response-container">
-                {selectedFilters.includes('Numbers') && <div>Numbers: {numbers.join(',')}</div>}
-                {selectedFilters.includes('Alphabets') && <div>Alphabets: {alphabets.join(',')}</div>}
+                {selectedFilters.includes('Numbers') && <div>Numbers: {numbers.join(', ')}</div>}
+                {selectedFilters.includes('Alphabets') && <div>Alphabets: {alphabets.join(', ')}</div>}
                 {selectedFilters.includes('HighestLowercaseAlphabet') && (
-                    <div>Highest Lowercase Alphabet: {highest_lowercase_alphabet.join(',')}</div>
+                    <div>Highest Lowercase Alphabet: {highest_lowercase_alphabet.join(', ')}</div>
                 )}
             </div>
         );
@@ -59,7 +61,6 @@ const ApiForm = () => {
                     placeholder='{"data":["M","1","334","4","B"]}'
                     rows={4}
                     className="input-field"
-                    
                 />
                 <br />
                 <button type='submit' className="submit-button">Submit</button>
@@ -77,8 +78,12 @@ const ApiForm = () => {
                                 </div>
                             ))}
                         </div>
-                        <select onChange={handleFilterSelect} className="filter-dropdown">
-                            <option value="" disabled selected>Select Filter</option>
+                        <select
+                            value={filterSelection}
+                            onChange={handleFilterSelect}
+                            className="filter-dropdown"
+                        >
+                            <option value="" disabled>Select Filter</option>
                             <option value="Numbers">Numbers</option>
                             <option value="Alphabets">Alphabets</option>
                             <option value="HighestLowercaseAlphabet">Highest Lowercase Alphabet</option>
