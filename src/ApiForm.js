@@ -18,7 +18,7 @@ const ApiForm = () => {
         try {
             const parsedInput = JSON.parse(jsonInput);
             if (!parsedInput.data) throw new Error('Invalid JSON structure. Please include a data array.');
-            const response = await axios.post('https://bfhl-backend-1-txsw.onrender.com/bfhl', parsedInput);
+            const response = await axios.post('https://bfhl-backend-1-1.onrender.com/bfhl', parsedInput);
             setResponseData(response.data);
             setError('');
         } catch (err) {
